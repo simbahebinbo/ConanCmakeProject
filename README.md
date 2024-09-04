@@ -1,7 +1,3 @@
-# example-libhello
-Project to reuse the hello package created with Conan C and C++ package manager
-
-
 ```shell
 $ conan --version
 Conan version 2.7.0

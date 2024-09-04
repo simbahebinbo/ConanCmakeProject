@@ -1,7 +1,26 @@
 #include "item.hpp" // Include the header file
 #include <SFML/Graphics.hpp>
 
+#include <CoreText/CoreText.h>
+
+std::string getSystemFontPath(const std::string& fontName) {
+    CFStringRef fontNameRef = CFStringCreateWithCString(NULL, fontName.c_str(), kCFStringEncodingUTF8);
+    CTFontRef fontRef = CTFontCreateWithName(fontNameRef, 0, NULL);
+    CFURLRef fontURL = (CFURLRef)CTFontCopyAttribute(fontRef, kCTFontURLAttribute);
+    CFStringRef pathRef = CFURLCopyFileSystemPath(fontURL, kCFURLPOSIXPathStyle);
+    char path[PATH_MAX];
+    CFStringGetCString(pathRef, path, sizeof(path), kCFStringEncodingUTF8);
+
+    CFRelease(fontNameRef);
+    CFRelease(fontRef);
+    CFRelease(fontURL);
+    CFRelease(pathRef);
+
+    return std::string(path);
+}
+
 void gui();
+
 int main() {
   Item item1("Apple", 0.99, "A red apple");
   Item item2("Banana", 0.59, "A yellow banana");
@@ -27,7 +46,8 @@ void gui(){
     
     // Load a font
     sf::Font font;
-    font.loadFromFile("arial.ttf");
+    std::string fontPath = getSystemFontPath("Helvetica");
+    font.loadFromFile(fontPath);
     text.setFont(font);
     
     // Main loop that continues until we call window.close()
